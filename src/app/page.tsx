@@ -4,12 +4,12 @@ import Link from "next/link";
 
 export default function Home() {
 	const teamMembers = [
-		{ name: "Aryan Bharti", regNo: "22BCI0062" },
-		{ name: "Radhika ladha", regNo: "22BCI0087" },
-		{ name: "M.Sri Pranav", regNo: "22BCI0088" },
-		{ name: "Satish nalagatla", regNo: "22BCI0094" },
-		{ name: "Sibhi kishore", regNo: "22BCI0074" },
-	];
+    { name: "Aryan Bharti", regNo: "22BCI0062" },
+    { name: "Radhika ladha", regNo: "22BCI0087" },
+    { name: "M.Sri Pranav", regNo: "22BCI0088" },
+    { name: "Nalagatla Sathish", regNo: "22BCI0094" },
+    { name: "Sibhi kishore", regNo: "22BCI0074" },
+  ];
 
    const features = [
 				{
