@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { storePassword } from "@/app/server/password";
-import crypto from "node:crypto";
 import { Wand2, Eye, EyeOff } from "lucide-react";
 import { revalidatePath } from "next/cache";
 import { revalidate } from "../server/revalidate";
@@ -56,18 +55,6 @@ export default function AddPasswordDialog({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Generate random IV
-    const iv = crypto.randomBytes(16);
-
-    // Encrypt the password
-    const cipher = crypto.createCipheriv(
-      "aes-256-gcm",
-      Buffer.from(crypto.randomBytes(32)),
-      iv
-    );
-    let encryptedData = cipher.update(password, "utf8", "hex");
-    encryptedData += cipher.final("hex");
 
     try {
       await storePassword({
