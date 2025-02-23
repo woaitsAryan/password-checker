@@ -15,7 +15,7 @@ import { storePassword } from "@/app/server/password";
 import { Wand2, Eye, EyeOff } from "lucide-react";
 import { revalidatePath } from "next/cache";
 import { revalidate } from "../server/revalidate";
-
+import { toast } from "sonner";
 interface AddPasswordDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -57,10 +57,16 @@ export default function AddPasswordDialog({
     e.preventDefault();
 
     try {
-      await storePassword({
+      const storePasswordPromise = storePassword({
         service,
         username,
         password,
+      });
+
+      toast.promise(storePasswordPromise, {
+        loading: "Storing password...",
+        success: "Password stored successfully",
+        error: "Failed to store password",
       });
 
       revalidate("/dashboard");

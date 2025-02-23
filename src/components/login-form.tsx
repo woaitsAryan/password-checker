@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { loginUser } from "@/app/server/user"
 import { redirect } from "next/navigation"
-
+import { toast } from "sonner"
 export function LoginForm({
   className,
   ...props
@@ -23,7 +23,12 @@ export function LoginForm({
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    await loginUser({ email, password });
+    const loginPromise = loginUser({ email, password });
+    toast.promise(loginPromise, {
+      loading: "Logging in...",
+      success: "Logged in successfully",
+      error: "Failed to login",
+    });
     redirect("/dashboard");
   };
   return (
