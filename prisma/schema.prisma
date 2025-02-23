@@ -1,0 +1,54 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String // This remains hashed for user authentication
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  passwords Password[]
+
+  encryptionKeys EncryptionKey[]
+}
+
+model Password {
+  id            String   @id @default(uuid())
+
+  userId        String
+  user      User     @relation(fields: [userId], references: [id])
+
+  service       String
+  username      String
+  encryptedData String // Changed from password to encryptedData
+  iv            String // Initialization Vector for encryption
+
+  keyId String // Reference to the encryption key used
+  key   EncryptionKey @relation(fields: [keyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([keyId])
+}
+
+model EncryptionKey {
+  id        String        @id @default(uuid())
+  key       String // Store the encryption key securely
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  passwords Password[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+}
