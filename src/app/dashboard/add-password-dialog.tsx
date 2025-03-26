@@ -30,14 +30,31 @@ export default function AddPasswordDialog({
   const [password, setPassword] = useState("");
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const [issues, setIssues] = useState<string[]>([]);
 
   const checkPasswordStrength = (pass: string): number => {
     let score = 0;
+    let currentIssue = "";
+
+    if (pass.length < 8) {
+      currentIssue = "Password must have at least 8 characters";
+    } else if (!pass.match(/[A-Z]/)) {
+      currentIssue = "Password must include an uppercase letter";
+    } else if (!pass.match(/[a-z]/)) {
+      currentIssue = "Password must include a lowercase letter";
+    } else if (!pass.match(/[0-9]/)) {
+      currentIssue = "Password must include a number";
+    } else if (!pass.match(/[^A-Za-z0-9]/)) {
+      currentIssue = "Password must include a special character";
+    }
+
     if (pass.length >= 8) score += 1;
     if (pass.match(/[A-Z]/)) score += 1;
     if (pass.match(/[a-z]/)) score += 1;
     if (pass.match(/[0-9]/)) score += 1;
     if (pass.match(/[^A-Za-z0-9]/)) score += 1;
+
+    setIssues([currentIssue]);
     return score;
   };
 
@@ -166,7 +183,7 @@ export default function AddPasswordDialog({
                 <Wand2 className="h-4 w-4" />
               </Button>
             </div>
-            <div className="h-1 flex gap-1 mt-1">
+            <div className="h-1 flex gap-1 mt-3">
               {[...Array(5)].map((_, i) => (
                 <div
                   // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
@@ -179,10 +196,15 @@ export default function AddPasswordDialog({
                 />
               ))}
             </div>
-            <div className="text-sm text-gray-500">
-              {passwordStrength <= 1 && "Weak"}
-              {passwordStrength > 1 && passwordStrength <= 3 && "Medium"}
-              {passwordStrength > 3 && "Strong"}
+            <div className="text-sm flex flex-row items-center">
+              <span className="text-gray-500">
+                {passwordStrength <= 1 && "Weak"}
+                {passwordStrength > 1 && passwordStrength <= 3 && "Medium"}
+                {passwordStrength > 3 && "Strong"}
+              </span>
+              {issues[0] && (
+                <span className="text-yellow-600 ml-2">⚠️ {issues[0]}</span>
+              )}
             </div>
           </div>
           <DialogFooter>
